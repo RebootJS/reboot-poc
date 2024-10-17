@@ -1,6 +1,5 @@
 import { ref } from "./ref.js";
 
-// TODO: consider what might happen with an async function
 /**
  * @param {{ value: Proxy, watch(callback: function): void } | Array<{value: Proxy, watch(callback: function): void}>} dependencies
  * @param {function(): T} getter
@@ -16,15 +15,5 @@ export function computed(dependencies, getter) {
     });
   });
 
-  return {
-    get value() {
-      return computedRef.value;
-    },
-    set value(newValue) {
-      computedRef.value = newValue;
-    },
-    watch(callback) {
-      computedRef.watch(callback);
-    },
-  };
+  return computedRef;
 }

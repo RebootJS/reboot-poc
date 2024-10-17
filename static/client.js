@@ -66,6 +66,7 @@ function generateHash() {
 const hash = generateHash();
 console.log(hash);
 
+// FIXME: define computed state in reboot data
 let expCount = computed(stores["count"], () =>
   Math.pow(stores["count"].value, 2)
 );
@@ -100,55 +101,11 @@ function addEventListeners() {
 
   buttonElements.forEach((button) => {
     const eventHandlerName = button.getAttribute("r-on:click");
-    // console.log(eventHandlerName, window["incrementCount"]);
-    // if (eventHandlerName && typeof window[eventHandlerName] === "function") {
-    // console.log(window[eventHandlerName]);
     button.addEventListener("click", () => {
       // FIXME: avoid eval, it's bad news
       eval(eventHandlerName);
     });
-    // }
   });
 }
 
 addEventListeners();
-
-// ----- Reactive test -----
-// let countRef = ref(0);
-// let countComputed = computed(countRef, () => Math.pow(2, countRef.value));
-
-// let firstRef = ref("john");
-// let lastRef = ref("doe");
-
-// console.log({ countRef, firstRef, lastRef, countComputed });
-// console.log(countComputed.value);
-
-// countComputed.watch((value) => {
-//   console.log("countComputed changed", value);
-// });
-
-// countRef.watch((value, oldValue) => {
-//   console.log("count changed", value, oldValue);
-// });
-
-// firstRef.watch((value) => {
-//   console.log("first changed", value);
-// });
-
-// lastRef.watch((value) => {
-//   console.log("last changed", value);
-// });
-
-// setInterval(() => {
-//   console.log("VALUE", countRef.value);
-//   countRef.value += 1;
-//   //   countNano.set(countNano.get() + 1);
-// }, 1000);
-
-// setTimeout(() => {
-//   firstRef.value = "jane";
-// }, 2000);
-
-// setTimeout(() => {
-//   lastRef.value = "smith";
-// }, 3000);

@@ -1,6 +1,8 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func main() {
 	server := http.Server{
@@ -8,5 +10,6 @@ func main() {
 		Handler: http.FileServer(http.Dir("static")),
 	}
 
+	println("HTTP server listening on http://localhost:3000/")
 	server.ListenAndServe()
 }
