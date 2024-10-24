@@ -2,13 +2,14 @@
 <html lang="en">
 
 <head>
+    <!-- TODO: define head in templates maybe? -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reboot PoC</title>
-    <script defer type="module" src="/client.js"></script>
     <style>
         html,
         body {
+            word-break: break-all;
             font-family: Arial, Helvetica, sans-serif;
             padding: 0;
             margin: 0;
@@ -23,54 +24,73 @@
 </head>
 
 <body>
-    <div id="__reboot">
-        <p id="count" data-r-1a0e0577>The count is: 1</p>
-        <p data-r-2e0e8e77>Your name is john doe</p>
-        <button data-r-a6fbef1e r-on:click="incrementCount()">+</button>
-        <button data-r-3336a662 r-on:click="modifyElement()">Change element text</button>
-        <button data-r-b86897cc r-on:click="changeFirst()">Change first</button>
-        <button data-r-d6eb5f99 r-on:click="changeLast()">Change last</button>
-    </div>
-    <!-- TODO: define computed state -->
-    <!-- TODO: define functions -->
-    <script id="__REBOOT_DATA__" type="application/json">
-            {
-                "count": 1,
-                "first": "john",
-                "last": "doe"
-            }
-    </script>
-    <script id="__REBOOT_NODES__" type="application/json">
-        [
-            {
-                "dependencies": [
-                    {
-                        "name": "count",
-                        "index": 1
-                    }
-                ],
-                "node": "data-r-1a0e0577",
-                "template": {
-                    "content": ["The count is: "]
+    <p data-r-ab2340>1</p>
+    <button data-r-e50cda>+</button>
+    <p data-r-01dc84>12345</p>
+    <p data-r-8ab2ce>bar</p>
+    <p data-r-75fa92>[1,2,3,4,5]</p>
+    <script type="module">
+        import { ref } from '/reboot/index.js';
+        import { computed } from '/reboot/index.js';
+        import { useCookie } from '/reboot/index.js';
+        import { hydratePage } from '/reboot/index.js';
+
+        let count = ref(1);
+        let cookie = useCookie("cookie");
+        cookie.value = "12345";
+        let userData = ref({ "foo": "bar" });
+        let arrayData = ref([1, 2, 3, 4, 5]);
+
+        function incrementCount() {
+            count.value += 1;
+        }
+
+        hydratePage({
+            // hydrate reactive elements 
+            "template": {
+                "ab2340": {
+                    "dependencies": [count],
+                    "template": () => { return `${count.value}` }
+                },
+                "01dc84": {
+                    "dependencies": [cookie],
+                    "template": () => { return `${cookie.value}` }
+                },
+                "8ab2ce": {
+                    "dependencies": [userData],
+                    "template": () => { return `${userData.value.foo}` },
+                    "unsafe": false,
+                },
+                "75fa92": {
+                    "dependencies": [arrayData],
+                    "template": () => { return `${JSON.stringify(arrayData.value)}` },
                 }
             },
-            {
-                "dependencies": [
-                    {
-                        "name": "first",
-                        "index": 1
-                    },
-                    {
-                        "name": "last",
-                        "index": 2
-                    }
-                ],
-                "node": "data-r-2e0e8e77",
-                "template": {
-                    "content": ["Your name is ", " "]
+            // hydrate buttons and forms etc
+            "events": {
+                "e50cda": {
+                    "click": () => { incrementCount() },
                 }
             }
-        ]
+        });
+
+        console.log(arrayData.value);
+
+        setInterval(() => {
+            count.value += 1;
+        }, 1000);
+
+        setInterval(() => {
+            cookie.value = Math.random().toString(36).substring(2);
+        }, 1500);
+
+        setInterval(() => {
+            userData.value.foo = Math.random().toString(36).substring(2);
+        }, 1750);
+
+        setInterval(() => {
+            arrayData.value.push(Math.random().toString(36).substring(2));
+        }, 2000);
     </script>
 </body>
 

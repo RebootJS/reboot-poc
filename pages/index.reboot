@@ -1,0 +1,40 @@
+<script>
+    // compiler hint: rendering state that isnt passed in through the renderRebootTemplate funtion
+    defineState({
+        count: 1,
+        cookie: useCookie("cookie"),
+    });
+
+    // compiler hint: props that should be passed into the renderRebootTemplate funtion
+    //                if they arent, we should panic or something
+    definePageProps([
+        "userData",
+    ]);
+
+    // this is actual JS, it will be injected into the rendered page after the
+    // framework generated stuff ie, defining the variables for the state defined
+    // above, but it will be before hydration code,
+    // ie, button.addEventListener("click" ...) so that we can define functions and
+    // use them in hydration 
+    console.log("Count is", count.value);
+    function incerementCount() {
+        count.value += 1;
+    }
+
+    // compiler hint: will be translated into an event listener for something like reboot:mounted
+    onMounted(() => {
+        console.log("mounted");
+    });
+
+    // compiler hint: will be translated into an event listener for something like reboot:unmounted
+    onUnmounted(() => {
+        console.log("unmounted");
+    });
+</script>
+
+<template>
+    <p>{{ count }}</p>
+    <button r-on:click="incrementCount()">+</button>
+    <p>{{ cookie }}</p>
+    <p>{{ userData.foo }}</p>
+</template>
